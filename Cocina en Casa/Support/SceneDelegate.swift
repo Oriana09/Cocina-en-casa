@@ -17,7 +17,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.setNavigationBarAppearance()
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = HomeViewController()
+        let navigationController = UINavigationController(
+            rootViewController: SearchViewController()
+        )
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         
     }
