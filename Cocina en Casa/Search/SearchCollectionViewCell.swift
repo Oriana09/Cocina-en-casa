@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SDWebImage
 
 class SearchCollectionCell: UICollectionViewCell {
     static let identifier = "SearchCollectionCell"
@@ -69,5 +70,10 @@ class SearchCollectionCell: UICollectionViewCell {
         ])
     }
     
-    func
+    func configure(with recipe: Recipe) {
+        self.imageView.sd_setImage(
+            with: URL(string: recipe.image),
+                placeholderImage: UIImage(named: "placeHolder")
+            )
+    }
 }
