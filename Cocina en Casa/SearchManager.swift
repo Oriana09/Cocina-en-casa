@@ -7,13 +7,18 @@
 
 import Foundation
 
-struct NetworkManager {
-    let resultURL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=ab3dfde8ee4644c5ad8904e4b2a2aa8d&number=10"
-    
+protocol SearchManagerDelegate {
+    func didUpdateSearchResults(_ results: [Recipe])
+    func didFailWithError(title: String, description: String)
+}
+
+struct SearchManager {
+    let resultURL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=ab3dfde8ee4644c5ad8904e4b2a2aa8d&number=100"
+    var delegate: SearchManagerDelegate?
     
     func FetchFoodRecipe(query: String) {
         let urlString = "\(resultURL)&query=\(query)"
-        performRequest(with: urlString)
+        self.performRequest(with: urlString)
     }
     
     func performRequest(with urlString: String) {
@@ -21,12 +26,12 @@ struct NetworkManager {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { (data, response,error) in
                 if error != nil {
-                    print(error!)
+                    self.delegate?.didFailWithError(title: "Ocurrió un error", description: error!.localizedDescription)
                     return
                 }
                 if let safeData = data {
                     if let recipe =  self.parseJSON(searchData: safeData) {
-                        
+                        self.delegate?.didUpdateSearchResults(recipe)
                     }
                 }
             }
@@ -41,7 +46,7 @@ struct NetworkManager {
             let decodedData = try decoder.decode(RecipeResponse.self, from: searchData)
             return decodedData.results
         } catch {
-            print(error)
+            self.delegate?.didFailWithError(title: "Ocurrió un error", description: error.localizedDescription)
             return nil
         }
     }

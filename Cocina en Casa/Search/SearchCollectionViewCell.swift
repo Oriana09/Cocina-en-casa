@@ -73,7 +73,11 @@ class SearchCollectionCell: UICollectionViewCell {
     func configure(with recipe: Recipe) {
         self.imageView.sd_setImage(
             with: URL(string: recipe.image),
-                placeholderImage: UIImage(named: "placeHolder")
+                placeholderImage: UIImage(named: "PlaceHolderImage")
             )
+        self.titleLabel.text = recipe.title
     }
 }
+
+
+
