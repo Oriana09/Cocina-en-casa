@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 import SDWebImage
 
-class SearchCollectionCell: UICollectionViewCell {
-    static let identifier = "SearchCollectionCell"
+class RecipeCollectionCell: UICollectionViewCell {
+    static let identifier = "RecipeCollectionCell"
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()

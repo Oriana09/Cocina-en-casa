@@ -13,11 +13,11 @@ protocol SearchManagerDelegate {
 }
 
 struct SearchManager {
-    let resultURL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=ab3dfde8ee4644c5ad8904e4b2a2aa8d&number=100"
+    let recipeURL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=ab3dfde8ee4644c5ad8904e4b2a2aa8d"
     var delegate: SearchManagerDelegate?
     
-    func FetchFoodRecipe(query: String) {
-        let urlString = "\(resultURL)&query=\(query)"
+    func fetchFoodRecipe(query: String, offset: Int) {
+        let urlString = "\(recipeURL)&query=\(query)&number=10&offset=\(offset)"
         self.performRequest(with: urlString)
     }
     
