@@ -15,6 +15,7 @@ class RecipeSearchViewController: UIViewController, UISearchTextFieldDelegate {
     }
     
     private var viewModel: RecipeSearchViewModel
+    
     init(
         viewModel: RecipeSearchViewModel
     ) {
@@ -46,20 +47,31 @@ class RecipeSearchViewController: UIViewController, UISearchTextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureDefaultThemeHeader()
-        self.configureViewModel()
+         self.configureViewModel()
      
     }
     
     func configureViewModel() {
         self.viewModel.onSearchTextChanged = { [weak self] text in
-            guard let resultVC = self?.currentSearchViewController?.searchResultsController as? RecipeSearchResultViewController else {
+            guard let resultVC = self?.currentSearchViewController?.searchResultsController as? RecipeCollectionViewController else {
                 return
             }
-            if let searchText = text, !searchText.isEmpty {
-                resultVC.updateSearch()
-            }
+//            resultVC.updateSearch()
         }
     }
+    
+//    private lazy var searchResultViewController: RecipeCollectionViewController = {
+    //        let navController = self.navigationController
+    //        let router = ArticleSearchRouter(
+    //            navigationViewController: navController
+    //        )
+    //        let viewModel = RecipeSearchViewModel(router: router)
+    //        let viewController = RecipeCollectionViewController(
+    //            viewModel: viewModel
+    //        )
+    //
+    //        return viewController
+    //    }()
     
     func configureDefaultThemeHeader() {
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -101,23 +113,40 @@ extension RecipeSearchViewController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         guard let _ = self.currentSearchViewController else { return }
-        self.viewModel.searchText = nil
+        self.viewModel.nameRecipe = nil
     }
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.currentSearchViewController?.showsSearchResultsController = false
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        guard let currentSearchViewController = self.currentSearchViewController else { return }
+//        guard currentSearchViewController.searchBar == searchBar else {
+//            return
+//        }
+//        guard let searchText = searchBar.searchTextField.text else
+//        {
+//            return
+//        }
+//        guard let _ = currentSearchViewController.searchResultsController as? RecipeSearchResultViewController else { return }
+//        self.viewModel.searchText
+//        self.currentSearchViewController?.showsSearchResultsController = true
+        
         guard let currentSearchViewController = self.currentSearchViewController else { return }
+        guard currentSearchViewController.searchBar == searchBar else { return }
+        guard let searchText = searchBar.searchTextField.text else { return }
+
+        // Actualiza el texto de búsqueda en el ViewModel
+ 
+        self.viewModel.nameRecipe = searchText
         
-        guard currentSearchViewController.searchBar == searchBar else    { return }
-        
-        guard let searchText = searchBar.searchTextField.text else
-        { return }
-        
-        guard let _ = currentSearchViewController.searchResultsController as? RecipeSearchResultViewController else { return }
-        
-        self.viewModel.searchText = searchText
+        // Llama al resultado para ejecutar la búsqueda
+        self.viewModel.result()
+
+        // Actualiza los resultados en el controlador de resultados
+        if let resultVC = currentSearchViewController.searchResultsController as? RecipeSearchResultViewController {
+            resultVC.updateSearch()
+        }
         
         self.currentSearchViewController?.showsSearchResultsController = true
     }
@@ -133,7 +162,7 @@ extension RecipeSearchViewController: UISearchBarDelegate {
         self.currentSearchViewController?.showsSearchResultsController = false
         
         // Limpiar el texto de búsqueda en el ViewModel
-        self.viewModel.searchText = ""
+        self.viewModel.nameRecipe = ""
     }
 }
 extension  RecipeSearchViewController: UISearchControllerDelegate {

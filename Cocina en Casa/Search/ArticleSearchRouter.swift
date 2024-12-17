@@ -11,7 +11,7 @@ import UIKit
 class ArticleSearchRouter {
     
     private weak var navigationViewController: UINavigationController?
-    init(navigationViewController: UINavigationController) {
+    init(navigationViewController: UINavigationController?) {
         self.navigationViewController = navigationViewController
     }
     func showSearch(
@@ -19,11 +19,8 @@ class ArticleSearchRouter {
         _ searchBarDelegate: UISearchBarDelegate,
         _ searchTextFieldDelegate: UISearchTextFieldDelegate
     ) {
-        guard let navigationController = self.navigationViewController else {
-                   print("Navigation Controller is nil")
-                   return
-               }
-        let searchResultViewController = RecipeSearchResultViewController(navigationController: navigationController)
+        
+        let searchResultViewController = RecipeCollectionViewController()
         let searchVC = SearchArticleController(searchResultsController: searchResultViewController)
         
         searchVC.automaticallyShowsSearchResultsController = false

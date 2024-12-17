@@ -20,8 +20,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let navigationController = UINavigationController()
         let router = ArticleSearchRouter(navigationViewController: navigationController)
         let viewModel = RecipeSearchViewModel(router: router)
-        let rootViewController = RecipeSearchViewController(viewModel: viewModel)
-        window?.rootViewController = rootViewController
+        let vc = RecipeSearchViewController(viewModel: viewModel)
+        navigationController.viewControllers.append(vc)
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         
     }
