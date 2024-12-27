@@ -13,7 +13,7 @@ protocol SearchManagerDelegate {
 }
 
 class SearchManager {
-    let recipeURL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=ab3dfde8ee4644c5ad8904e4b2a2aa8d"
+    let recipeURL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=9a13bace7b934b8baaf9698a7a8baaea"
     var delegate: SearchManagerDelegate? {
         didSet {
             print("hello")
