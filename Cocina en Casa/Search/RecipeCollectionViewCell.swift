@@ -66,15 +66,14 @@ class RecipeCollectionCell: UICollectionViewCell {
             ),
             self.titleLabel.trailingAnchor.constraint(
                 equalTo: self.contentView.trailingAnchor)
-            ,
         ])
     }
     
     func configure(with recipe: Recipe) {
         self.imageView.sd_setImage(
             with: URL(string: recipe.image),
-                placeholderImage: UIImage(named: "PlaceHolderImage")
-            )
+            placeholderImage: UIImage(named: "PlaceHolderImage")
+        )
         self.titleLabel.text = recipe.title
     }
 }

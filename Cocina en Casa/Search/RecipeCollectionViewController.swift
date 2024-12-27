@@ -9,7 +9,6 @@ import UIKit
 
 class RecipeCollectionViewController: UIViewController {
     
-    
     let searchController = UISearchController(searchResultsController: nil)
     
     private let collectionView: UICollectionView = {
@@ -28,9 +27,7 @@ class RecipeCollectionViewController: UIViewController {
         return collection
     }()
     
-    
     private let viewModel: RecipeSearchViewModel
-    
     
     init(
         viewModel: RecipeSearchViewModel
@@ -42,7 +39,6 @@ class RecipeCollectionViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +54,6 @@ class RecipeCollectionViewController: UIViewController {
     }
     
     func setupSearchController() {
-        //            searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Buscar algo..."
         searchController.searchBar.delegate = self
@@ -66,6 +61,7 @@ class RecipeCollectionViewController: UIViewController {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
+    
     private func configureCollectionView() {
         self.view.addSubview(self.collectionView)
         NSLayoutConstraint.activate([
@@ -73,23 +69,21 @@ class RecipeCollectionViewController: UIViewController {
                 equalTo: self.view.safeAreaLayoutGuide.topAnchor
             ),
             self.collectionView.bottomAnchor.constraint(
-                equalTo: view.bottomAnchor
+                equalTo: self.view.bottomAnchor
             ),
             self.collectionView.leadingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.leadingAnchor
+                equalTo: self.view.safeAreaLayoutGuide.leadingAnchor
             ),
             self.collectionView.trailingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.trailingAnchor
+                equalTo: self.view.safeAreaLayoutGuide.trailingAnchor
             )
         ])
-        
     }
-    
     
     private func registerCell() {
         self.collectionView.register(RecipeCollectionCell.self, forCellWithReuseIdentifier: RecipeCollectionCell.identifier)
     }
-   
+    
     private func setupBindings() {
         self.viewModel.onDataUpdated = { [weak self] in
             DispatchQueue.main.async {
@@ -103,12 +97,10 @@ class RecipeCollectionViewController: UIViewController {
                 self?.present(alert, animated: true)
             }
         }
-        
     }
 }
 // MARK: - UICollectionViewDelegate
 extension RecipeCollectionViewController: UICollectionViewDelegate {
-    
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
@@ -122,7 +114,6 @@ extension RecipeCollectionViewController: UICollectionViewDelegate {
 
 // MARK: - UICollectionViewDataSource
 extension RecipeCollectionViewController: UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.viewModel.recipes.count
     }
@@ -140,19 +131,17 @@ extension RecipeCollectionViewController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: 350.0, height: 350.0)
     }
 }
-// MARK: - UICollectionViewDelegateFlowLayout
+// MARK: - UISearchBarDelegate
 extension RecipeCollectionViewController: UISearchBarDelegate {
-    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text, !query.isEmpty else { return }
         self.viewModel.nameRecipe = query
         
-        // Llamamos al método del ViewModel para iniciar la búsqueda
         self.viewModel.fetchRecipe()
         
-        // Ocultamos el teclado
         searchBar.resignFirstResponder()
     }
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.viewModel.nameRecipe = searchText
     }
@@ -160,7 +149,6 @@ extension RecipeCollectionViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.viewModel.recipes.removeAll()
         collectionView.reloadData()
-        
     }
 }
 

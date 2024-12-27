@@ -14,11 +14,8 @@ protocol SearchManagerDelegate {
 
 class SearchManager {
     let recipeURL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=9a13bace7b934b8baaf9698a7a8baaea"
-    var delegate: SearchManagerDelegate? {
-        didSet {
-            print("hello")
-        }
-    }
+    
+    var delegate: SearchManagerDelegate?
     
     func fetchFoodRecipe(query: String, offset: Int) {
         let urlString = "\(recipeURL)&query=\(query)&number=10&offset=\(offset)"
@@ -28,7 +25,7 @@ class SearchManager {
     
     func performRequest(with urlString: String) {
         if let url = URL(string: urlString) {
-          
+            
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { (data, response,error) in
                 if error != nil {
@@ -38,14 +35,12 @@ class SearchManager {
                     return
                 }
                 if let safeData = data {
-                  
+                    
                     if let recipe =  self.parseJSON(searchData: safeData) {
                         self.delegate?.didUpdateSearchResults(recipe)
-                        
                     }
                 }
             }
-            
             task.resume()
         }
     }

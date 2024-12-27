@@ -13,24 +13,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-//        let navigationController = UINavigationController(
-//            rootViewController: self.createRootVC()
-//        )
+        
         self.setNavigationBarAppearance()
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-//        let navigationController = UINavigationController()
-////        let router = ArticleSearchRouter(navigationViewController: navigationController)
-        let viewModel = RecipeSearchViewModel()
-//        let vc = MainSearchViewController(viewModel: viewModel)
-//        navigationController.viewControllers.append(vc)
-        let navigationController = UINavigationController(rootViewController: RecipeCollectionViewController(viewModel: viewModel))
         
+        let viewModel = RecipeSearchViewModel()
+        let navigationController = UINavigationController(rootViewController: RecipeCollectionViewController(viewModel: viewModel))
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
-        
     }
-
+    
     func setNavigationBarAppearance() {
         if #available(iOS 15, *) {
             let navBarAppearance: UINavigationBarAppearance = UINavigationBarAppearance()
@@ -43,8 +36,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             UINavigationBar.appearance().tintColor = .systemGreen
         }
     }
-    
-    
     func sceneDidDisconnect(_ scene: UIScene) {
     }
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -54,7 +45,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
     }
     func sceneDidEnterBackground(_ scene: UIScene) {
-        
     }
 }
 
