@@ -13,15 +13,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
+//        let navigationController = UINavigationController(
+//            rootViewController: self.createRootVC()
+//        )
         self.setNavigationBarAppearance()
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        let navigationController = UINavigationController()
-        let router = ArticleSearchRouter(navigationViewController: navigationController)
-        let viewModel = RecipeSearchViewModel(router: router)
-        let vc = RecipeSearchViewController(viewModel: viewModel)
-        navigationController.viewControllers.append(vc)
+//        let navigationController = UINavigationController()
+////        let router = ArticleSearchRouter(navigationViewController: navigationController)
+        let viewModel = RecipeSearchViewModel()
+//        let vc = MainSearchViewController(viewModel: viewModel)
+//        navigationController.viewControllers.append(vc)
+        let navigationController = UINavigationController(rootViewController: RecipeCollectionViewController(viewModel: viewModel))
+        
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         

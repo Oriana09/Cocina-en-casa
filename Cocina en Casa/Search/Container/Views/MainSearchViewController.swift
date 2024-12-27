@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class RecipeSearchViewController: UIViewController, UISearchTextFieldDelegate {
+class MainSearchViewController: UIViewController, UISearchTextFieldDelegate {
     
     private var currentSearchViewController: UISearchController? {
         return self.presentedViewController as? UISearchController
@@ -47,7 +47,7 @@ class RecipeSearchViewController: UIViewController, UISearchTextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureDefaultThemeHeader()
-         self.configureViewModel()
+//          self.configureViewModel()
      
     }
     
@@ -95,77 +95,68 @@ class RecipeSearchViewController: UIViewController, UISearchTextFieldDelegate {
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = "Cancelar"
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).tintColor = .label
     }
+    
+    func navigateToSearchController() {
+        let searchController = RecipeCollectionViewController(viewModel: RecipeSearchViewModel())
+        navigationController?.pushViewController(searchController, animated: true)
+    }
 }
 
-extension RecipeSearchViewController: UISearchBarDelegate {
+extension MainSearchViewController: UISearchBarDelegate {
     
-    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        if self.searchBarView == searchBar {
-            self.definesPresentationContext = true
-            self.searchBarView.isHidden = true
-        
-            self.viewModel.showSearch(self, self, self)
-        
-            return false
-        }
-        return true
-    }
+//    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+//        if self.searchBarView == searchBar {
+//            self.definesPresentationContext = true
+//            self.searchBarView.isHidden = true
+//            
+//            return false
+//        }
+//        return true
+//    }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        guard let _ = self.currentSearchViewController else { return }
-        self.viewModel.nameRecipe = nil
-    }
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        self.currentSearchViewController?.showsSearchResultsController = false
+        self.navigateToSearchController()
     }
     
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+//        self.currentSearchViewController?.showsSearchResultsController = false
+//    }
+    
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 //        guard let currentSearchViewController = self.currentSearchViewController else { return }
-//        guard currentSearchViewController.searchBar == searchBar else {
-//            return
+//        guard currentSearchViewController.searchBar == searchBar else { return }
+//        guard let searchText = searchBar.searchTextField.text else { return }
+//
+//        // Actualiza el texto de búsqueda en el ViewModel
+// 
+//        self.viewModel.nameRecipe = searchText
+//        
+//        // Llama al resultado para ejecutar la búsqueda
+//        self.viewModel.result()
+//
+//        // Actualiza los resultados en el controlador de resultados
+//        if let resultVC = currentSearchViewController.searchResultsController as? RecipeCollectionViewController {
+////            resultVC.updateSearch()
 //        }
-//        guard let searchText = searchBar.searchTextField.text else
-//        {
-//            return
-//        }
-//        guard let _ = currentSearchViewController.searchResultsController as? RecipeSearchResultViewController else { return }
-//        self.viewModel.searchText
+//        
 //        self.currentSearchViewController?.showsSearchResultsController = true
-        
-        guard let currentSearchViewController = self.currentSearchViewController else { return }
-        guard currentSearchViewController.searchBar == searchBar else { return }
-        guard let searchText = searchBar.searchTextField.text else { return }
-
-        // Actualiza el texto de búsqueda en el ViewModel
- 
-        self.viewModel.nameRecipe = searchText
-        
-        // Llama al resultado para ejecutar la búsqueda
-        self.viewModel.result()
-
-        // Actualiza los resultados en el controlador de resultados
-        if let resultVC = currentSearchViewController.searchResultsController as? RecipeSearchResultViewController {
-            resultVC.updateSearch()
-        }
-        
-        self.currentSearchViewController?.showsSearchResultsController = true
-    }
-    
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.text = ""
-        
-        // Ocultar el teclado
-        searchBar.resignFirstResponder()
-        
-        // Ocultar los resultados de búsqueda (si es necesario)
-        self.currentSearchViewController?.showsSearchResultsController = false
-        
-        // Limpiar el texto de búsqueda en el ViewModel
-        self.viewModel.nameRecipe = ""
-    }
+//    }
+//    
+//    
+//    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+//        searchBar.text = ""
+//        
+//        // Ocultar el teclado
+//        searchBar.resignFirstResponder()
+//        
+//        // Ocultar los resultados de búsqueda (si es necesario)
+//        self.currentSearchViewController?.showsSearchResultsController = false
+//        
+//        // Limpiar el texto de búsqueda en el ViewModel
+//        self.viewModel.nameRecipe = ""
+//    }
 }
-extension  RecipeSearchViewController: UISearchControllerDelegate {
+extension  MainSearchViewController: UISearchControllerDelegate {
     func willDismissSearchController(_ searchController: UISearchController) {
         self.searchBarView.isHidden = false
     }
