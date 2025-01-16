@@ -1,8 +1,8 @@
 //
-//  SearchModel.swift
+//  Recipe.swift
 //  Cocina en Casa
 //
-//  Created by Oriana Costancio on 20/11/2024.
+//  Created by Oriana Costancio on 10/01/2025.
 //
 
 import Foundation
