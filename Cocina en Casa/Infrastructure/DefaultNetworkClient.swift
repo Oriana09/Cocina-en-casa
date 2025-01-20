@@ -8,24 +8,24 @@
 import Foundation
 
 final class DefaultNetworkClient: NetworkClient {
-    private let baseURL: URL
+    private let baseURL = "https://api.spoonacular.com/"
     private let urlSession: URLSession
     
-    init(baseURL: URL, urlSession: URLSession = .shared) {
-        self.baseURL = baseURL
+    init( urlSession: URLSession = .shared) {
+//        self.baseURL = baseURL
         self.urlSession = urlSession
     }
     
     
     func performRequest<T>(endpoint: String, parameters: [String : String]?) async throws -> T where T : Decodable {
         // Construcción de la URL con parámetros
-        guard var  urlComponents = URLComponents(url: baseURL.appendingPathComponent(endpoint), resolvingAgainstBaseURL: true) else {
+        guard var  urlComponents = URLComponents(string: baseURL + endpoint) else {
             throw NetworkError.invalidURL
         }
         if let parameters = parameters {
             urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
         }
-        
+        // Asegurarse de que la URL final sea válida
         guard let url = urlComponents.url else {
             throw NetworkError.invalidURL
         }

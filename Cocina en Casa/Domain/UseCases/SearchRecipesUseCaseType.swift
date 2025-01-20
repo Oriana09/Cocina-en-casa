@@ -8,5 +8,5 @@
 import Foundation
 
 protocol SearchRecipesUseCaseType {
-    func execute(query: String) async throws -> [Recipe]
+    func execute(query: String, offset: Int) async throws -> [Recipe]
 }

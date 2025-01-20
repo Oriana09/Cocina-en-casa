@@ -9,7 +9,7 @@ import Foundation
  
 
 struct ApiRecipe: Codable{
-    let results: [Item]
+    let resultsItem: [Item]
 }
 
 // MARK: - Item

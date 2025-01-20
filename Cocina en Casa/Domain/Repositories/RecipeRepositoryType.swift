@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol RecipeRepository {
-    func searchRecipes(query: String) async throws -> [Recipe]
+protocol RecipeRepositoryType {
+    func searchRecipes(query: String, offset: Int) async throws -> [Recipe]
 }

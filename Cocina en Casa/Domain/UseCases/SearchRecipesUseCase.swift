@@ -8,12 +8,12 @@
 import Foundation
 
 class SearchRecipesUseCase: SearchRecipesUseCaseType {
-    private let recipeRepository: RecipeRepository
+    private let recipeRepository: RecipeRepositoryType
     
-    init(recipeRepository: RecipeRepository) {
+    init(recipeRepository: RecipeRepositoryType) {
         self.recipeRepository = recipeRepository
     }
-    func execute(query: String) async throws -> [Recipe] {
-        return try await recipeRepository.searchRecipes(query: query)
+    func execute(query: String, offset: Int) async throws -> [Recipe] {
+        return try await recipeRepository.searchRecipes(query: query, offset: offset)
     }
 }
