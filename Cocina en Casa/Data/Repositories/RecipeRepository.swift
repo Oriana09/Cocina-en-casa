@@ -17,6 +17,8 @@ final class RecipeRepository: RecipeRepositoryType {
     
     func searchRecipes(query: String, offset: Int) async throws -> [Recipe] {
         
+        let baseURL = "https://api.spoonacular.com/"
+        
         let parameters = [
             "apiKey": "9a13bace7b934b8baaf9698a7a8baaea",
             "query": query,
@@ -25,16 +27,12 @@ final class RecipeRepository: RecipeRepositoryType {
             
         ]
         do {
-            let response : ApiRecipe = try await networkClient.performRequest(
-                endpoint: "recipes/complexSearch",
+            let response : RecipeResponse = try await networkClient.performRequest(
+                endpoint: baseURL + "recipes/complexSearch",
                 parameters: parameters
             )
-            return response.resultsItem.map { networkModel in
-                Recipe(
-                    id: networkModel.id,
-                    title: networkModel.title,
-                    image: networkModel.image)
-            }
+            return response.results
+            
         } catch {
             // Manejar y transformar errores
             throw mapNetworkErrorToDomainError(error)

@@ -8,7 +8,6 @@
 import Foundation
 
 final class DefaultNetworkClient: NetworkClient {
-    private let baseURL = "https://api.spoonacular.com/"
     private let urlSession: URLSession
     
     init( urlSession: URLSession = .shared) {
@@ -19,7 +18,7 @@ final class DefaultNetworkClient: NetworkClient {
     
     func performRequest<T>(endpoint: String, parameters: [String : String]?) async throws -> T where T : Decodable {
         // Construcción de la URL con parámetros
-        guard var  urlComponents = URLComponents(string: baseURL + endpoint) else {
+        guard var  urlComponents = URLComponents(string:  endpoint) else {
             throw NetworkError.invalidURL
         }
         if let parameters = parameters {

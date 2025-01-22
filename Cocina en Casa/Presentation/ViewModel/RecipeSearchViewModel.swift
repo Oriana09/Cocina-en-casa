@@ -22,10 +22,7 @@ class RecipeSearchViewModel {
             onLoadingStateChanged?(isLoading)
         }
     }
-    
-    
-    //    var offset = 10
-    
+
     private var offset = 0
     private var query: String?
   
@@ -40,7 +37,7 @@ class RecipeSearchViewModel {
           guard !query.isEmpty else { return }
           self.query = query
           self.offset = 0
-          self.recipes = [] // Limpiamos recetas anteriores
+//          self.recipes = [] // Limpiamos recetas anteriores
           fetchRecipes()
       }
     // Método para cargar más datos (scroll infinito)

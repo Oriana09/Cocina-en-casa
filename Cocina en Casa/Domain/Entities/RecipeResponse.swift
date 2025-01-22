@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct RecipeResponse {
+struct RecipeResponse: Codable {
     let results: [Recipe]
 }
 
 // MARK: - Item
-struct  Recipe {
+struct  Recipe: Codable {
     let id: Int
     let title: String
     let image: String
