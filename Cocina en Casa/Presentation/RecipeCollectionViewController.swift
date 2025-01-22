@@ -10,6 +10,8 @@ import UIKit
 class RecipeCollectionViewController: UIViewController {
     
     let searchController = UISearchController(searchResultsController: nil)
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -47,6 +49,7 @@ class RecipeCollectionViewController: UIViewController {
         
         self.setupSearchController()
         self.configureCollectionView()
+        configureActivityIndicator()
         self.registerCell()
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
@@ -84,6 +87,15 @@ class RecipeCollectionViewController: UIViewController {
         self.collectionView.register(RecipeCollectionCell.self, forCellWithReuseIdentifier: RecipeCollectionCell.identifier)
     }
     
+    private func configureActivityIndicator() {
+        self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(self.activityIndicator)
+        NSLayoutConstraint.activate([
+            self.activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            self.activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
     private func setupBindings() {
         self.viewModel.onDataUpdated = { [weak self] in
             DispatchQueue.main.async {
@@ -95,6 +107,15 @@ class RecipeCollectionViewController: UIViewController {
                 let alert = UIAlertController(title: title, message: description, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default))
                 self?.present(alert, animated: true)
+            }
+        }
+        self.viewModel.onLoadingStateChanged = { [weak self] isLoading in
+            DispatchQueue.main.async {
+                if isLoading {
+                    self?.activityIndicator.startAnimating()
+                } else {
+                    self?.activityIndicator.stopAnimating()
+                }
             }
         }
     }
@@ -135,20 +156,19 @@ extension RecipeCollectionViewController: UICollectionViewDelegateFlowLayout {
 extension RecipeCollectionViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text, !query.isEmpty else { return }
-        self.viewModel.nameRecipe = query
-        
-        self.viewModel.fetchRecipe()
-        
+        self.viewModel.searchRecipes(query: query)
         searchBar.resignFirstResponder()
     }
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        self.viewModel.nameRecipe = searchText
-    }
+    //    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    //        self.viewModel.nameRecipe = searchText
+    //    }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        self.viewModel.recipes.removeAll()
-        collectionView.reloadData()
+        self.viewModel.searchRecipes(query: "")
+        searchBar.text = ""
+        self.collectionView.reloadData()
+        
     }
 }
 
