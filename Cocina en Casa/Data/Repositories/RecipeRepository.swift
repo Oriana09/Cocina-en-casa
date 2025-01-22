@@ -24,7 +24,6 @@ final class RecipeRepository: RecipeRepositoryType {
             "query": query,
             "offset": String(offset),
             "number": "10"
-            
         ]
         do {
             let response : RecipeResponse = try await networkClient.performRequest(
@@ -34,10 +33,10 @@ final class RecipeRepository: RecipeRepositoryType {
             return response.results
             
         } catch {
-            // Manejar y transformar errores
             throw mapNetworkErrorToDomainError(error)
         }
     }
+    
     private func mapNetworkErrorToDomainError(_ error: Error) -> RecipeError {
         if let networkError = error as? NetworkError {
             switch networkError {

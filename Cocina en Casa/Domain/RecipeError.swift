@@ -9,12 +9,12 @@ import Foundation
 
 enum RecipeError: Error {
     
-    case invalidQuery // La consulta está vacía o no es válida.
-    case noResultsFound // No se encontraron recetas
-    case networkError// Problemas con la conexión.
-    case serverError // Error en el servidor (500, 404, etc.).
-    case decodingError  // Error al decodificar datos.
-    case unknown // Error desconocido.
+    case invalidQuery
+    case noResultsFound
+    case networkError
+    case serverError
+    case decodingError
+    case unknown
     
     var localizedDescription: String {
         switch self {

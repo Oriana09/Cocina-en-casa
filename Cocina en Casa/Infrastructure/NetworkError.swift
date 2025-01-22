@@ -8,27 +8,28 @@
 import Foundation
 
 enum NetworkError: Error {
-    case invalidURL // La URL está mal formada.
-    case requestFailed // La solicitud falló (problemas de conexión).
-    case unexpectedStatusCode(Int) // Código de estado HTTP inesperado.
-    case invalidResponse // Respuesta no válida o corrupta.
-    case decodingFailed // Fallo al decodificar los datos.
-    case unknown(Error) // Error desconocido.
+    
+    case invalidURL
+    case requestFailed
+    case unexpectedStatusCode(Int)
+    case invalidResponse
+    case decodingFailed
+    case unknown(Error)
     
     var localizedDescription: String {
-          switch self {
-          case .invalidURL:
-              return "The URL provided is invalid."
-          case .unexpectedStatusCode(let statusCode):
-              return "Unexpected response from the server. Status code: \(statusCode)."
-          case .decodingFailed:
-              return "Failed to decode the server response."
-          case .unknown(let error):
-              return "An unknown error occurred: \(error.localizedDescription)"
-          case .requestFailed:
-              return "The request failed (connection problems)."
-          case .invalidResponse:
-              return "Invalid or corrupted response"
-          }
-      }
+        switch self {
+        case .invalidURL:
+            return "The URL provided is invalid."
+        case .unexpectedStatusCode(let statusCode):
+            return "Unexpected response from the server. Status code: \(statusCode)."
+        case .decodingFailed:
+            return "Failed to decode the server response."
+        case .unknown(let error):
+            return "An unknown error occurred: \(error.localizedDescription)"
+        case .requestFailed:
+            return "The request failed (connection problems)."
+        case .invalidResponse:
+            return "Invalid or corrupted response"
+        }
+    }
 }

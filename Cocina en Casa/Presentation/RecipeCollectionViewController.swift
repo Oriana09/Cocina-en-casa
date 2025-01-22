@@ -88,28 +88,28 @@ class RecipeCollectionViewController: UIViewController {
     }
     
     private func configureActivityIndicator() {
-        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(activityIndicator)
+        self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(self.activityIndicator)
         NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            self.activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            self.activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
     private func setupBindings() {
-        viewModel.onDataUpdated = { [weak self] in
+        self.viewModel.onDataUpdated = { [weak self] in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
             }
         }
-        viewModel.onError = { [weak self] title, description in
+        self.viewModel.onError = { [weak self] title, description in
             DispatchQueue.main.async {
                 let alert = UIAlertController(title: title, message: description, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default))
                 self?.present(alert, animated: true)
             }
         }
-        viewModel.onLoadingStateChanged = { [weak self] isLoading in
+        self.viewModel.onLoadingStateChanged = { [weak self] isLoading in
             DispatchQueue.main.async {
                 if isLoading {
                     self?.activityIndicator.startAnimating()
@@ -156,7 +156,7 @@ extension RecipeCollectionViewController: UICollectionViewDelegateFlowLayout {
 extension RecipeCollectionViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text, !query.isEmpty else { return }
-        viewModel.searchRecipes(query: query)
+        self.viewModel.searchRecipes(query: query)
         searchBar.resignFirstResponder()
     }
     
@@ -165,10 +165,10 @@ extension RecipeCollectionViewController: UISearchBarDelegate {
     //    }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.searchRecipes(query: "")
+        self.viewModel.searchRecipes(query: "")
         searchBar.text = ""
-        collectionView.reloadData()
-            
-            }
+        self.collectionView.reloadData()
+        
     }
-           
+}
+
