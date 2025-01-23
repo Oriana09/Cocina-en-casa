@@ -25,10 +25,10 @@ El proyecto utiliza **Clean Architecture** y el patrón **MVVM (Model-View-ViewM
 ### 👩🏻‍💻 Contribuciones
  ¡Las contribuciones son bienvenidas! Si deseas agregar una nueva funcionalidad, corregir errores o mejorar el diseño.
   ---
-## 📬 Contacto
+### 📬 Contacto
  Si tenes preguntas o sugerencias, no dudes en contactarme:
- • Email: orianacostancio69@gmail.com
- • LinkedIn: https://www.linkedin.com/in/oriana-costancio-59322120a/ 
+ - Email: orianacostancio69@gmail.com
+ - LinkedIn: https://www.linkedin.com/in/oriana-costancio-59322120a/ 
   ---
 ## 👩🏻‍💻 Autor
 Oriana Costancio
