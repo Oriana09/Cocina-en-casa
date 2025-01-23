@@ -19,16 +19,16 @@ El proyecto utiliza **Clean Architecture** y el patrón **MVVM (Model-View-ViewM
  ### Librerías utilizadas:
  - **[SDWebImage](https://github.com/SDWebImage/SDWebImage)**: Para la carga eficiente de imágenes desde URLs.
    
-🌟 Próximas funcionalidades
+### 🌟 Próximas funcionalidades
  • Ver los ingredientes y pasos detallados para preparar una receta.
   ---
- 👩🏻‍💻 Contribuciones
+### 👩🏻‍💻 Contribuciones
  ¡Las contribuciones son bienvenidas! Si deseas agregar una nueva funcionalidad, corregir errores o mejorar el diseño.
   ---
- 📬 Contacto
+## 📬 Contacto
  Si tenes preguntas o sugerencias, no dudes en contactarme:
  • Email: orianacostancio69@gmail.com
  • LinkedIn: https://www.linkedin.com/in/oriana-costancio-59322120a/ 
   ---
-👩🏻‍💻 Autor
+## 👩🏻‍💻 Autor
 Oriana Costancio
