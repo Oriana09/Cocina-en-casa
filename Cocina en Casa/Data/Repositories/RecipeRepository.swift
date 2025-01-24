@@ -11,7 +11,9 @@ final class RecipeRepository: RecipeRepositoryType {
     
     private let networkClient: NetworkClient
     
-    init(networkClient: NetworkClient) {
+    init(
+        networkClient: NetworkClient = DefaultNetworkClient()
+    ) {
         self.networkClient = networkClient
     }
     

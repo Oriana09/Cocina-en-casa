@@ -10,7 +10,8 @@ import UIKit
 
 class RecipeSearchViewModel {
     
-    private let recipeRepository: RecipeRepository
+   
+    private let searchUseCase: SearchRecipesUseCaseType
     private(set) var recipes: [Recipe] = []
     
     var onDataUpdated: (() -> Void)?
@@ -27,9 +28,9 @@ class RecipeSearchViewModel {
     private var query: String?
     
     init(
-        recipeRepository: RecipeRepository
+        searchUseCase: SearchRecipesUseCaseType = SearchRecipesUseCase()
     ) {
-        self.recipeRepository = recipeRepository
+        self.searchUseCase = searchUseCase
     }
     
     func searchRecipes(query: String) {
@@ -53,7 +54,7 @@ class RecipeSearchViewModel {
         
         Task {
             do {
-                let newRecipes = try await recipeRepository.searchRecipes(query: query, offset: offset)
+                let newRecipes = try await self.searchUseCase.execute(query: query, offset: offset)
                 self.recipes.append(contentsOf: newRecipes)
                 self.isLoading = false
                 self.onDataUpdated?()

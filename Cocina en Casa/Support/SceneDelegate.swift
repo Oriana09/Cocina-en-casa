@@ -18,10 +18,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         
-        let networkClient = DefaultNetworkClient()
-        let recipeRepository = RecipeRepository(networkClient: networkClient)
-        let viewModel = RecipeSearchViewModel(recipeRepository: recipeRepository)
-        let navigationController = UINavigationController(rootViewController: RecipeCollectionViewController(viewModel: viewModel))
+        let viewModel = RecipeSearchViewModel()
+        let navigationController = UINavigationController(
+            rootViewController: RecipeCollectionViewController(
+                viewModel: viewModel
+            )
+        )
         
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
