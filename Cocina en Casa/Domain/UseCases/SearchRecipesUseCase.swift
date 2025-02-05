@@ -8,10 +8,10 @@
 import Foundation
 
 class SearchRecipesUseCase: SearchRecipesUseCaseType {
-    private let recipeRepository: RecipeRepositoryType
+    private let recipeRepository: RecipeRepository
     
     init(
-        recipeRepository: RecipeRepositoryType = RecipeRepository()
+        recipeRepository: RecipeRepository = ConfigRepository()
     ) {
         self.recipeRepository = recipeRepository
     }
