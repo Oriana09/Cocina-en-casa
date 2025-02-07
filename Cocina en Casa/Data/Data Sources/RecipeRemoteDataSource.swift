@@ -7,18 +7,18 @@
 
 import Foundation
 
-protocol RemoteDataSource {
+protocol RecipeRemoteDataSourceType {
     func searchRecipes(query: String, offset: Int) async throws -> [Recipe]
 }
 
-final class configRemoteDataSource: RemoteDataSource {
+final class RecipeRemoteDataSource: RecipeRemoteDataSourceType {
     
-    private let  networkClient: NetworkClient
+    private let networkClient: NetworkClientType
     private let baseURL =  "https://api.spoonacular.com/"
     private let apiKey = "9a13bace7b934b8baaf9698a7a8baaea"
     
     init(
-        networkClient: NetworkClient = DefaultNetworkClient()
+        networkClient: NetworkClientType = NetworkClient()
     ) {
         self.networkClient = networkClient
     }

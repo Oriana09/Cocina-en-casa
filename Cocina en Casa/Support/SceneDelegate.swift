@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let viewModel = RecipeSearchViewModel()
         let navigationController = UINavigationController(
-            rootViewController: RecipeCollectionViewController(
+            rootViewController: RecipeViewController(
                 viewModel: viewModel
             )
         )

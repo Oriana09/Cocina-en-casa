@@ -10,8 +10,8 @@ import UIKit
 
 class RecipeSearchViewModel {
     
-   
     private let searchUseCase: SearchRecipesUseCaseType
+    
     private(set) var recipes: [Recipe] = []
     
     var onDataUpdated: (() -> Void)?
@@ -37,14 +37,14 @@ class RecipeSearchViewModel {
         guard !query.isEmpty else { return }
         self.query = query
         self.offset = 0
-        //          self.recipes = [] // Limpiamos recetas anteriores
-        fetchRecipes()
+                  self.recipes = [] // Limpiamos recetas anteriores
+        self.fetchRecipes()
     }
     
     func loadMoreData() {
         guard let query = self.query, !query.isEmpty, !isLoading else { return }
         self.offset += 10
-        fetchRecipes()
+        self.fetchRecipes()
     }
     
     private func fetchRecipes() {
@@ -52,15 +52,23 @@ class RecipeSearchViewModel {
         
         isLoading = true
         
-        Task {
+        Task(priority: .userInitiated) {
             do {
-                let newRecipes = try await self.searchUseCase.execute(query: query, offset: offset)
+                let newRecipes = try await self.searchUseCase.execute(
+                    query: query,
+                    offset: offset
+                )
                 self.recipes.append(contentsOf: newRecipes)
                 self.isLoading = false
-                self.onDataUpdated?()
+                DispatchQueue.main.async {
+                    self.onDataUpdated?()
+                }
+              
             } catch let error as RecipeError {
                 self.isLoading = false
-                self.handleError(error)
+                DispatchQueue.main.async {
+                    self.handleError(error)
+                }
             }
         }
     }
@@ -90,7 +98,6 @@ class RecipeSearchViewModel {
             title = "Unknown error"
             description = "An unknown error occurred. Please try again later."
         }
-        
         self.onError?(title, description)
     }
 }

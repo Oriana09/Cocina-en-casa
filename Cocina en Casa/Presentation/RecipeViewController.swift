@@ -7,26 +7,18 @@
 
 import UIKit
 
-class RecipeCollectionViewController: UIViewController {
+class RecipeViewController: UIViewController {
     
     let searchController = UISearchController(searchResultsController: nil)
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     
-    
-    private let collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 50
-        layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        let collection = UICollectionView(
-            frame: .zero,
-            collectionViewLayout: layout
-        )
-        collection.showsHorizontalScrollIndicator = false
-        
-        collection.translatesAutoresizingMaskIntoConstraints = false
-        return collection
+    private lazy var tableView: UITableView = {
+        let table = UITableView()
+        table.delegate = self
+        table.dataSource = self
+        table.translatesAutoresizingMaskIntoConstraints = false
+        /*table.separatorStyle = .none */ // Opcional: si no quieres separadores entre celdas
+        return table
     }()
     
     private let viewModel: RecipeSearchViewModel
@@ -44,15 +36,13 @@ class RecipeCollectionViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Recetas"
+        self.navigationItem.title = "Recipes"
         self.view.backgroundColor = .systemBackground
         
         self.setupSearchController()
-        self.configureCollectionView()
-        configureActivityIndicator()
+        self.configureTableView()
         self.registerCell()
-        self.collectionView.delegate = self
-        self.collectionView.dataSource = self
+        self.configureActivityIndicator()
         self.setupBindings()
     }
     
@@ -65,27 +55,29 @@ class RecipeCollectionViewController: UIViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
     }
     
-    private func configureCollectionView() {
-        self.view.addSubview(self.collectionView)
+    private func configureTableView() {
+        self.view.addSubview(self.tableView)
         NSLayoutConstraint.activate([
-            self.collectionView.topAnchor.constraint(
-                equalTo: self.view.safeAreaLayoutGuide.topAnchor
+            self.tableView.topAnchor.constraint(
+                equalTo: self.view.topAnchor
             ),
-            self.collectionView.bottomAnchor.constraint(
+            self.tableView.bottomAnchor.constraint(
                 equalTo: self.view.bottomAnchor
             ),
-            self.collectionView.leadingAnchor.constraint(
-                equalTo: self.view.safeAreaLayoutGuide.leadingAnchor
+            self.tableView.leadingAnchor.constraint(
+                equalTo: self.view.leadingAnchor
             ),
-            self.collectionView.trailingAnchor.constraint(
-                equalTo: self.view.safeAreaLayoutGuide.trailingAnchor
+            self.tableView.trailingAnchor.constraint(
+                equalTo: self.view.trailingAnchor
             )
         ])
     }
     
     private func registerCell() {
-        self.collectionView.register(RecipeCollectionCell.self, forCellWithReuseIdentifier: RecipeCollectionCell.identifier)
+        tableView.register(RecipeTableViewCell.self, forCellReuseIdentifier: RecipeTableViewCell.identifier)
+    
     }
+
     
     private func configureActivityIndicator() {
         self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
@@ -99,7 +91,7 @@ class RecipeCollectionViewController: UIViewController {
     private func setupBindings() {
         self.viewModel.onDataUpdated = { [weak self] in
             DispatchQueue.main.async {
-                self?.collectionView.reloadData()
+                self?.tableView.reloadData()
             }
         }
         self.viewModel.onError = { [weak self] title, description in
@@ -120,8 +112,9 @@ class RecipeCollectionViewController: UIViewController {
         }
     }
 }
-// MARK: - UICollectionViewDelegate
-extension RecipeCollectionViewController: UICollectionViewDelegate {
+// MARK: - UITableViewDelegate
+
+extension RecipeViewController: UITableViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
@@ -133,27 +126,25 @@ extension RecipeCollectionViewController: UICollectionViewDelegate {
     }
 }
 
-// MARK: - UICollectionViewDataSource
-extension RecipeCollectionViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+// MARK: - UITableViewDataSource
+
+extension RecipeViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.viewModel.recipes.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipeCollectionCell.identifier, for: indexPath) as! RecipeCollectionCell
-        cell.configure(with: self.viewModel.recipes[indexPath.row])
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell =  tableView.dequeueReusableCell(withIdentifier: "RecipeTableViewCell", for: indexPath) as! RecipeTableViewCell
+        let recipe = viewModel.recipes[indexPath.row]
+        cell.configure(with: recipe)
         return cell
     }
+    
+    
 }
-// MARK: - UICollectionViewDelegateFlowLayout
-extension RecipeCollectionViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        return CGSize(width: 350.0, height: 350.0)
-    }
-}
+
 // MARK: - UISearchBarDelegate
-extension RecipeCollectionViewController: UISearchBarDelegate {
+extension RecipeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text, !query.isEmpty else { return }
         self.viewModel.searchRecipes(query: query)
@@ -167,7 +158,7 @@ extension RecipeCollectionViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.viewModel.searchRecipes(query: "")
         searchBar.text = ""
-        self.collectionView.reloadData()
+        self.tableView.reloadData()
         
     }
 }
