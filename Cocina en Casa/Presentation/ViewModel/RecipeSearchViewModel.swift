@@ -8,9 +8,11 @@
 import Foundation
 import UIKit
 
+@MainActor
 class RecipeSearchViewModel {
     
-    private let recipeRepository: RecipeRepository
+    private let searchUseCase: SearchRecipesUseCaseType
+    
     private(set) var recipes: [Recipe] = []
     
     var onDataUpdated: (() -> Void)?
@@ -27,23 +29,23 @@ class RecipeSearchViewModel {
     private var query: String?
     
     init(
-        recipeRepository: RecipeRepository
+        searchUseCase: SearchRecipesUseCaseType = SearchRecipesUseCase()
     ) {
-        self.recipeRepository = recipeRepository
+        self.searchUseCase = searchUseCase
     }
     
     func searchRecipes(query: String) {
         guard !query.isEmpty else { return }
         self.query = query
         self.offset = 0
-        //          self.recipes = [] // Limpiamos recetas anteriores
-        fetchRecipes()
+        self.recipes = []
+        self.fetchRecipes()
     }
     
     func loadMoreData() {
         guard let query = self.query, !query.isEmpty, !isLoading else { return }
         self.offset += 10
-        fetchRecipes()
+        self.fetchRecipes()
     }
     
     private func fetchRecipes() {
@@ -51,15 +53,20 @@ class RecipeSearchViewModel {
         
         isLoading = true
         
-        Task {
+        Task(priority: .userInitiated) {
             do {
-                let newRecipes = try await recipeRepository.searchRecipes(query: query, offset: offset)
-                self.recipes.append(contentsOf: newRecipes)
-                self.isLoading = false
-                self.onDataUpdated?()
+                let newRecipes = try await self.searchUseCase.execute(
+                    query: query,
+                    offset: offset
+                )
+                DispatchQueue.main.async {
+                    self.onDataUpdated?()
+                }
             } catch let error as RecipeError {
                 self.isLoading = false
-                self.handleError(error)
+                DispatchQueue.main.async {
+                    self.handleError(error)
+                }
             }
         }
     }
@@ -89,7 +96,6 @@ class RecipeSearchViewModel {
             title = "Unknown error"
             description = "An unknown error occurred. Please try again later."
         }
-        
         self.onError?(title, description)
     }
 }

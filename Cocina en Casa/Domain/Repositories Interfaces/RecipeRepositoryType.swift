@@ -8,5 +8,8 @@
 import Foundation
 
 protocol RecipeRepositoryType {
-    func searchRecipes(query: String, offset: Int) async throws -> [Recipe]
+    func searchRecipes(
+        query: String,
+        offset: Int
+    ) async throws -> [Recipe]
 }
