@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 class RecipeSearchViewModel {
     
     private let searchUseCase: SearchRecipesUseCaseType
@@ -37,7 +38,7 @@ class RecipeSearchViewModel {
         guard !query.isEmpty else { return }
         self.query = query
         self.offset = 0
-                  self.recipes = [] // Limpiamos recetas anteriores
+        self.recipes = []
         self.fetchRecipes()
     }
     
@@ -58,12 +59,9 @@ class RecipeSearchViewModel {
                     query: query,
                     offset: offset
                 )
-                self.recipes.append(contentsOf: newRecipes)
-                self.isLoading = false
                 DispatchQueue.main.async {
                     self.onDataUpdated?()
                 }
-              
             } catch let error as RecipeError {
                 self.isLoading = false
                 DispatchQueue.main.async {
