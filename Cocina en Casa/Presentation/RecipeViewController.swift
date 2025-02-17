@@ -157,9 +157,11 @@ extension RecipeViewController: UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.viewModel.searchRecipes(query: "")
+ 
         searchBar.text = ""
+        
         self.tableView.reloadData()
         
     }
-}
+} 
 

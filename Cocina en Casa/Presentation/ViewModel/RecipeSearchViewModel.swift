@@ -59,8 +59,11 @@ class RecipeSearchViewModel {
                     query: query,
                     offset: offset
                 )
+                self.recipes.append(contentsOf: newRecipes)
+                self.isLoading = false
                 DispatchQueue.main.async {
                     self.onDataUpdated?()
+                    
                 }
             } catch let error as RecipeError {
                 self.isLoading = false
