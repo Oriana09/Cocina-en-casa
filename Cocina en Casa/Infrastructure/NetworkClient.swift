@@ -7,6 +7,14 @@
 
 import Foundation
 
+protocol NetworkClientType {
+    func performRequest<T: Decodable>(
+        endpoint: String,
+        parameters: [String: String]?
+    ) async throws -> T
+}
+
+
 final class NetworkClient: NetworkClientType {
     private let urlSession: URLSession
     
