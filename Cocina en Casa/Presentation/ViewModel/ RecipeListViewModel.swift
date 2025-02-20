@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @MainActor
-class RecipeSearchViewModel {
+class  RecipeListViewModel {
     
     private let searchUseCase: SearchRecipesUseCaseType
     

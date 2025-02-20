@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RecipeViewController: UIViewController {
+class RecipeListViewController: UIViewController {
     
     let searchController = UISearchController(searchResultsController: nil)
     private let activityIndicator = UIActivityIndicatorView(style: .large)
@@ -21,10 +21,10 @@ class RecipeViewController: UIViewController {
         return table
     }()
     
-    private let viewModel: RecipeSearchViewModel
+    private let viewModel:  RecipeListViewModel
     
     init(
-        viewModel: RecipeSearchViewModel
+        viewModel:  RecipeListViewModel
     ) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -114,7 +114,7 @@ class RecipeViewController: UIViewController {
 }
 // MARK: - UITableViewDelegate
 
-extension RecipeViewController: UITableViewDelegate {
+extension RecipeListViewController: UITableViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
@@ -124,11 +124,15 @@ extension RecipeViewController: UITableViewDelegate {
             self.viewModel.loadMoreData()
         }
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        <#code#>
+    }
 }
 
 // MARK: - UITableViewDataSource
 
-extension RecipeViewController: UITableViewDataSource {
+extension RecipeListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.viewModel.recipes.count
     }
@@ -144,7 +148,7 @@ extension RecipeViewController: UITableViewDataSource {
 }
 
 // MARK: - UISearchBarDelegate
-extension RecipeViewController: UISearchBarDelegate {
+extension RecipeListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text, !query.isEmpty else { return }
         self.viewModel.searchRecipes(query: query)
