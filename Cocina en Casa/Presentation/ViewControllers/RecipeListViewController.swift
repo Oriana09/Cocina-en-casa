@@ -126,7 +126,9 @@ extension RecipeListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        <#code#>
+        let selectedRecipe = viewModel.recipes[indexPath.row]
+        let detailVC = RecipeDetailViewController(viewModel: RecipeDetailViewModel())
+        self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 
