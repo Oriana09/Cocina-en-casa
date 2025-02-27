@@ -18,6 +18,7 @@ class  RecipeListViewModel {
     var onDataUpdated: (() -> Void)?
     var onError: ((String, String) -> Void)?
     var onLoadingStateChanged: ((Bool) -> Void)?
+    var didSelectRecipe: ((Int) -> Void)?
     
     private var isLoading = false {
         didSet {

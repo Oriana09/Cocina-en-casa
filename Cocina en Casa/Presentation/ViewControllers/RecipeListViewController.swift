@@ -44,6 +44,8 @@ class RecipeListViewController: UIViewController {
         self.registerCell()
         self.configureActivityIndicator()
         self.setupBindings()
+        
+        
     }
     
     func setupSearchController() {
@@ -75,9 +77,9 @@ class RecipeListViewController: UIViewController {
     
     private func registerCell() {
         tableView.register(RecipeTableViewCell.self, forCellReuseIdentifier: RecipeTableViewCell.identifier)
-    
+        
     }
-
+    
     
     private func configureActivityIndicator() {
         self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
@@ -110,6 +112,13 @@ class RecipeListViewController: UIViewController {
                 }
             }
         }
+        self.viewModel.didSelectRecipe = { [weak self] recipeId in
+            guard let self = self else { return }
+            
+            let detailVC = RecipeDetailViewController(viewModel: RecipeDetailViewModel())
+            detailVC.recipeId = recipeId
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
     }
 }
 // MARK: - UITableViewDelegate
@@ -126,9 +135,8 @@ extension RecipeListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedRecipe = viewModel.recipes[indexPath.row]
-        let detailVC = RecipeDetailViewController(viewModel: RecipeDetailViewModel())
-        self.navigationController?.pushViewController(detailVC, animated: true)
+        let selectedRecipeId = viewModel.recipes[indexPath.row].id
+        self.viewModel.didSelectRecipe?(selectedRecipeId)
     }
 }
 
@@ -163,11 +171,11 @@ extension RecipeListViewController: UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.viewModel.searchRecipes(query: "")
- 
+        
         searchBar.text = ""
         
         self.tableView.reloadData()
         
     }
-} 
+}
 
