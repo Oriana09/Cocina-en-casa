@@ -78,7 +78,9 @@ class RecipeTableViewCell: UITableViewCell {
     func configure(with recipe: Recipe) {
         self.RicipeimageView.sd_setImage(
             with: URL(string: recipe.image),
-            placeholderImage: UIImage(named: "PlaceHolderImage")
+            placeholderImage: UIImage(named: "PlaceHolderImage"),
+            options: [.highPriority, .scaleDownLargeImages],
+            context: nil
         )
         self.titleLabel.text = recipe.title
     }

@@ -17,7 +17,7 @@ class RecipeListViewController: UIViewController {
         table.delegate = self
         table.dataSource = self
         table.translatesAutoresizingMaskIntoConstraints = false
-        /*table.separatorStyle = .none */ // Opcional: si no quieres separadores entre celdas
+        table.separatorStyle = .none
         return table
     }()
     
@@ -129,12 +129,13 @@ extension RecipeListViewController: UITableViewDelegate {
         let contentHeight = scrollView.contentSize.height
         let height = scrollView.frame.size.height
         
-        if offsetY > contentHeight - height {
+        if offsetY > contentHeight - height - 50 {
             self.viewModel.loadMoreData()
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         let selectedRecipeId = viewModel.recipes[indexPath.row].id
         self.viewModel.didSelectRecipe?(selectedRecipeId)
     }
@@ -164,10 +165,6 @@ extension RecipeListViewController: UISearchBarDelegate {
         self.viewModel.searchRecipes(query: query)
         searchBar.resignFirstResponder()
     }
-    
-    //    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    //        self.viewModel.nameRecipe = searchText
-    //    }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.viewModel.searchRecipes(query: "")

@@ -29,7 +29,7 @@ class RecipeDetailViewController: UIViewController {
         return imageView
     }()
     
-    private let recipeTitleLabel: UILabel = {
+    private lazy var recipeTitleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textColor = .black
@@ -37,6 +37,7 @@ class RecipeDetailViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
     private lazy var cookingTimeStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [cookingTimeIcon, cookingTimeLabel])
         stack.axis = .vertical
@@ -54,8 +55,6 @@ class RecipeDetailViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    
-    
     
     private lazy var cookingTimeLabel: UILabel = {
         let label = UILabel()
@@ -130,31 +129,6 @@ class RecipeDetailViewController: UIViewController {
         self.setContrainsts()
         self.registerCell()
         self.setupBindings()
-        
-        //        / Reducimos temporalmente los labels y los íconos para simular la animación de escala
-        self.cookingTimeLabel.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
-        self.servingsLabel.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
-        self.cookingTimeIcon.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
-        self.servingsIcon.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-                // Hacemos visibles todos los elementos y les aplicamos la escala normal
-                self.cookingTimeLabel.alpha = 1
-                self.servingsLabel.alpha = 1
-                self.cookingTimeIcon.alpha  = 1
-                self.servingsIcon.alpha = 1
-                
-                self.cookingTimeLabel.transform = .identity
-                self.servingsLabel.transform = .identity
-                self.cookingTimeIcon.transform = .identity
-                self.servingsIcon.transform = .identity
-            })
-            
-            // Aplicamos el efecto de escala a los íconos al mismo tiempo
-            self.cookingTimeIcon.addSymbolEffect(.scale, animated: true)
-            self.servingsIcon.addSymbolEffect(.scale, animated: true)
-        }
     }
     
     private func setupUI() {
@@ -190,7 +164,6 @@ class RecipeDetailViewController: UIViewController {
             self.tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
-        
     }
     
     private func registerCell() {
@@ -207,23 +180,35 @@ class RecipeDetailViewController: UIViewController {
         self.viewModel.onRecipeLoaded = { [weak self] in
             guard let self = self, let recipe = viewModel.recipe else
             { return }
-            self.recipeTitleLabel.text = recipe.title
-            self.recipeImageView.sd_setImage(
-                with: URL(
-                    string: recipe.image
-                ),
-                placeholderImage: UIImage(
-                    named: "PlaceHolderImage"
-                )
-            )
-            self.cookingTimeLabel.text = "Tiempo \(recipe.readyInMinutes)'"
-            self.servingsLabel.text = "Porciones \(recipe.servings)"
             
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.recipeTitleLabel.text = recipe.title
+                self.recipeImageView.sd_setImage(
+                    with: URL(
+                        string: recipe.image
+                    ),
+                    placeholderImage: UIImage(
+                        named: "PlaceHolderImage"
+                    ),
+                    options: [.highPriority, .scaleDownLargeImages],
+                    context: nil
+                    
+                )
+                self.cookingTimeLabel.text = "Time \(recipe.readyInMinutes)'"
+                self.servingsLabel.text = "Servings \(recipe.servings)"
+                
+                self.tableView.reloadData()
+                self.animate()
+                
+            }
         }
         
-        self.viewModel.onError = { errorMessage in
-            print("Error:", errorMessage)
+        self.viewModel.onError = { [weak self] title, description in
+            DispatchQueue.main.async {
+                let alert = UIAlertController(title: title, message: description, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                self?.present(alert, animated: true)
+            }
         }
     }
     
@@ -234,6 +219,28 @@ class RecipeDetailViewController: UIViewController {
         }
         alerta.addAction(accionAceptar)
         present(alerta, animated: true, completion: nil)
+    }
+    
+    private func animate() {
+        self.cookingTimeLabel.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        self.servingsLabel.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        self.cookingTimeIcon.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        self.servingsIcon.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.cookingTimeLabel.alpha = 1
+            self.servingsLabel.alpha = 1
+            self.cookingTimeIcon.alpha  = 1
+            self.servingsIcon.alpha = 1
+            
+            self.cookingTimeLabel.transform = .identity
+            self.servingsLabel.transform = .identity
+            self.cookingTimeIcon.transform = .identity
+            self.servingsIcon.transform = .identity
+        })
+        
+        self.cookingTimeIcon.addSymbolEffect(.scale, animated: true)
+        self.servingsIcon.addSymbolEffect(.scale, animated: true)
     }
 }
 
