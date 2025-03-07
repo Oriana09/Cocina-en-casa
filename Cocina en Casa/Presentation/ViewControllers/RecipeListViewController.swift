@@ -44,15 +44,13 @@ class RecipeListViewController: UIViewController {
         self.registerCell()
         self.configureActivityIndicator()
         self.setupBindings()
-        
-        
     }
     
     func setupSearchController() {
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Buscar algo..."
-        searchController.searchBar.delegate = self
-        searchController.searchBar.showsCancelButton = true
+        self.searchController.obscuresBackgroundDuringPresentation = false
+        self.searchController.searchBar.placeholder = "Buscar algo..."
+        self.searchController.searchBar.delegate = self
+        self.searchController.searchBar.showsCancelButton = true
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
@@ -76,10 +74,8 @@ class RecipeListViewController: UIViewController {
     }
     
     private func registerCell() {
-        tableView.register(RecipeTableViewCell.self, forCellReuseIdentifier: RecipeTableViewCell.identifier)
-        
+        self.tableView.register(RecipeTableViewCell.self, forCellReuseIdentifier: RecipeTableViewCell.identifier)
     }
-    
     
     private func configureActivityIndicator() {
         self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
@@ -154,8 +150,6 @@ extension RecipeListViewController: UITableViewDataSource {
         cell.configure(with: recipe)
         return cell
     }
-    
-    
 }
 
 // MARK: - UISearchBarDelegate
@@ -172,7 +166,6 @@ extension RecipeListViewController: UISearchBarDelegate {
         searchBar.text = ""
         
         self.tableView.reloadData()
-        
     }
 }
 

@@ -114,7 +114,7 @@ class RecipeStepCell: UITableViewCell {
     }
     
     func configure(with step: RecipeDetail.Instruction) {
-        self.stepNumberLabel.text = "Paso \(step.number)"
+        self.stepNumberLabel.text = String(step.number)
         self.stepDescriptionLabel.text = step.step
     }
 }
