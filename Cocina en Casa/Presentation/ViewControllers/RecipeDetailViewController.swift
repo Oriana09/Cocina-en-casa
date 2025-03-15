@@ -11,6 +11,7 @@ import SDWebImage
 
 class RecipeDetailViewController: UIViewController {
     
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let contentView = RecipeDetailView()
     private let viewModel: RecipeDetailViewModel
     
@@ -34,6 +35,7 @@ class RecipeDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
+        self.configureActivityIndicator()
         self.setupBindings()
     }
     
@@ -48,16 +50,33 @@ class RecipeDetailViewController: UIViewController {
         )
     }
     
+    private func configureActivityIndicator() {
+        self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(self.activityIndicator)
+        NSLayoutConstraint.activate([
+            self.activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            self.activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
     private func setupBindings() {
         guard let recipeId = recipeId else {
             self.showAlertAndReturn()
             return
         }
-        self.viewModel.loadRecipe(recipeId: recipeId)
+        
+        self.viewModel.isLoading = { [weak self] isLoading in
+            DispatchQueue.main.async {
+                if isLoading {
+                    self?.activityIndicator.startAnimating()
+                } else {
+                    self?.activityIndicator.stopAnimating()
+                }
+            }
+        }
         
         self.viewModel.onRecipeLoaded = { [weak self] in
-            guard let self = self, let recipe = viewModel.recipe else
-            { return }
+            guard let self = self, let recipe = self.viewModel.recipe else { return }
             
             DispatchQueue.main.async {
                 self.contentView.updateUI(with: recipe)
@@ -71,6 +90,8 @@ class RecipeDetailViewController: UIViewController {
                 self?.present(alert, animated: true)
             }
         }
+        
+        self.viewModel.loadRecipe(recipeId: recipeId)
     }
     
     private func showAlertAndReturn() {
@@ -92,7 +113,7 @@ extension RecipeDetailViewController: UITableViewDelegate {
 extension RecipeDetailViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.getSteps().count
+        return self.viewModel.getSteps().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -100,7 +121,7 @@ extension RecipeDetailViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let step = viewModel.getSteps()[indexPath.row]
+        let step = self.viewModel.getSteps()[indexPath.row]
         cell.configure(with: step)
         
         return cell

@@ -7,10 +7,11 @@
 
 import UIKit
 
+
 class RecipeListViewController: UIViewController {
     
     let searchController = UISearchController(searchResultsController: nil)
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
+   
     
     private lazy var tableView: UITableView = {
         let table = UITableView()
@@ -42,9 +43,11 @@ class RecipeListViewController: UIViewController {
         self.setupSearchController()
         self.configureTableView()
         self.registerCell()
-        self.configureActivityIndicator()
         self.setupBindings()
+        
     }
+    
+    
     
     func setupSearchController() {
         self.searchController.obscuresBackgroundDuringPresentation = false
@@ -74,17 +77,13 @@ class RecipeListViewController: UIViewController {
     }
     
     private func registerCell() {
+        self.tableView.register(SkeletonRecipeTableViewCell.self, forCellReuseIdentifier: SkeletonRecipeTableViewCell.identifier)
         self.tableView.register(RecipeTableViewCell.self, forCellReuseIdentifier: RecipeTableViewCell.identifier)
+        
+        
     }
     
-    private func configureActivityIndicator() {
-        self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(self.activityIndicator)
-        NSLayoutConstraint.activate([
-            self.activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            self.activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-    }
+   
     
     private func setupBindings() {
         self.viewModel.onDataUpdated = { [weak self] in
@@ -101,11 +100,7 @@ class RecipeListViewController: UIViewController {
         }
         self.viewModel.onLoadingStateChanged = { [weak self] isLoading in
             DispatchQueue.main.async {
-                if isLoading {
-                    self?.activityIndicator.startAnimating()
-                } else {
-                    self?.activityIndicator.stopAnimating()
-                }
+                self?.tableView.reloadData()
             }
         }
         self.viewModel.didSelectRecipe = { [weak self] recipeId in
@@ -140,15 +135,30 @@ extension RecipeListViewController: UITableViewDelegate {
 // MARK: - UITableViewDataSource
 
 extension RecipeListViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.recipes.count
+        return  viewModel.isLoading ? 10 : viewModel.recipes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell =  tableView.dequeueReusableCell(withIdentifier: "RecipeTableViewCell", for: indexPath) as! RecipeTableViewCell
-        let recipe = viewModel.recipes[indexPath.row]
-        cell.configure(with: recipe)
-        return cell
+        
+        if viewModel.isLoading {
+            let cell =  tableView.dequeueReusableCell(withIdentifier: "SkeletonRecipeTableViewCell", for: indexPath) as! SkeletonRecipeTableViewCell
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + Double(indexPath.row) * 0.3
+            ) {
+                cell.startAnimation()
+            }
+            
+            return cell
+        } else {
+            let recipe = viewModel.recipes[indexPath.row]
+            let cell =  tableView.dequeueReusableCell(withIdentifier: "RecipeTableViewCell", for: indexPath) as! RecipeTableViewCell
+            
+            cell.configure(with: recipe)
+            return cell
+            
+        }
     }
 }
 

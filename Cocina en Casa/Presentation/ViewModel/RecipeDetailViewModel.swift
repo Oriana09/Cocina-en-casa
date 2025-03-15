@@ -11,35 +11,41 @@ class RecipeDetailViewModel {
     
     private let RecipeDetailUseCase: FetchRecipeDetailUseCasetype
     private(set) var recipe: RecipeDetail?
-    //    let recipeId: Int
+    
     
     var onRecipeLoaded: (() -> Void)?
     var onError: ((String, String) -> Void)?
+    var onLoadingStateChanged: ((Bool) -> Void)?
+    var isLoading: ((Bool) -> Void)?
     
     init(
         recipeDetailUseCase: FetchRecipeDetailUseCasetype = FetchRecipeDetailUseCase()
-        //        recipeId: Int
+        
     ){
         self.RecipeDetailUseCase = recipeDetailUseCase
-        //        self.recipeId = recipeId
+        
     }
     
     func loadRecipe(recipeId: Int) {
+        self.isLoading?(true)
+        
         RecipeDetailUseCase.execute(id: recipeId) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let recipe):
                     self?.recipe = recipe
-                    
+                    self?.isLoading?(false)
                     self?.onRecipeLoaded?()
                 case .failure(let error):
                     if let  recipeError =  error as? RecipeError {
                         self?.handleError(recipeError)
+                        self?.isLoading?(false)
                     } else {
                         self?.handleError(.unknown)
                     }
                 }
             }
+            
         }
     }
     

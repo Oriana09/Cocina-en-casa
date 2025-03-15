@@ -20,7 +20,7 @@ class  RecipeListViewModel {
     var onLoadingStateChanged: ((Bool) -> Void)?
     var didSelectRecipe: ((Int) -> Void)?
     
-    private var isLoading = false {
+    private(set) var isLoading = false {
         didSet {
             onLoadingStateChanged?(isLoading)
         }
@@ -55,20 +55,22 @@ class  RecipeListViewModel {
         isLoading = true
         
         Task(priority: .userInitiated) {
+           
             do {
                 let newRecipes = try await self.searchUseCase.execute(
                     query: query,
                     offset: offset
                 )
-                self.recipes.append(contentsOf: newRecipes)
-                self.isLoading = false
-                DispatchQueue.main.async {
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    self.recipes.append(contentsOf: newRecipes)
+                    self.isLoading = false
                     self.onDataUpdated?()
                     
                 }
             } catch let error as RecipeError {
-                self.isLoading = false
                 DispatchQueue.main.async {
+                    self.isLoading = false
                     self.handleError(error)
                 }
             }

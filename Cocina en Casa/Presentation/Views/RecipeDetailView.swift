@@ -38,7 +38,7 @@ class RecipeDetailView: UIView {
     }()
     
     private lazy var cookingTimeStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [cookingTimeIcon, cookingTimeLabel])
+        let stack = UIStackView(arrangedSubviews: [self.cookingTimeIcon, self.cookingTimeLabel])
         stack.axis = .vertical
         stack.spacing = 4
         stack.alignment = .center
@@ -65,7 +65,12 @@ class RecipeDetailView: UIView {
     }()
     
     private lazy var servingsStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [servingsIcon, servingsLabel])
+        let stack = UIStackView(
+            arrangedSubviews: [
+                self.servingsIcon,
+                self.servingsLabel
+            ]
+        )
         stack.axis = .vertical
         stack.spacing = 4
         stack.alignment = .center
@@ -92,7 +97,12 @@ class RecipeDetailView: UIView {
     }()
     
     private  lazy var infoStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [cookingTimeStack, servingsStack])
+        let stack = UIStackView(
+            arrangedSubviews: [
+                self.cookingTimeStack,
+                self.servingsStack
+            ]
+        )
         stack.axis = .horizontal
         stack.spacing = 20
         stack.alignment = .center

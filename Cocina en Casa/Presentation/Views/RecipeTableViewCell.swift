@@ -12,7 +12,7 @@ import SDWebImage
 class RecipeTableViewCell: UITableViewCell {
     static let identifier = "RecipeTableViewCell"
     
-    private lazy var RicipeimageView: UIImageView = {
+    private lazy var recipeimageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 8
@@ -31,7 +31,6 @@ class RecipeTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         self.setupViews()
     }
     
@@ -41,27 +40,25 @@ class RecipeTableViewCell: UITableViewCell {
     
     private func setupViews() {
         self.contentView.addSubviews(
-            self.RicipeimageView,
+            self.recipeimageView,
             self.titleLabel
         )
         NSLayoutConstraint.activate([
-            self.RicipeimageView.topAnchor.constraint(
+            self.recipeimageView.topAnchor.constraint(
                 equalTo: self.contentView.topAnchor, constant: 8
             ),
-            self.RicipeimageView.leadingAnchor.constraint(
+            self.recipeimageView.leadingAnchor.constraint(
                 equalTo: self.contentView.leadingAnchor, constant: 8
             ),
-            self.RicipeimageView.trailingAnchor.constraint(
+            self.recipeimageView.trailingAnchor.constraint(
                 equalTo: self.contentView.trailingAnchor, constant: -8
             ),
-            self.RicipeimageView.heightAnchor.constraint(
-                equalTo: self.contentView.widthAnchor, multiplier: 0.75 
+            self.recipeimageView.heightAnchor.constraint(
+                equalTo: self.contentView.widthAnchor, multiplier: 0.75
             ),
-//            self.RicipeimageView.widthAnchor.constraint(equalToConstant: 150),
-//            self.RicipeimageView.heightAnchor.constraint(equalToConstant: 150),
-            // Constraints para el título
+            
             self.titleLabel.topAnchor.constraint(
-                equalTo: self.RicipeimageView.bottomAnchor,
+                equalTo: self.recipeimageView.bottomAnchor,
                 constant: 8
             ),
             self.titleLabel.leadingAnchor.constraint(
@@ -70,13 +67,13 @@ class RecipeTableViewCell: UITableViewCell {
             self.titleLabel.trailingAnchor.constraint(
                 equalTo: self.contentView.trailingAnchor, constant: -8),
             self.titleLabel.bottomAnchor.constraint(
-                      equalTo: self.contentView.bottomAnchor, constant: -8
-                  )
+                equalTo: self.contentView.bottomAnchor, constant: -8
+            )
         ])
     }
     
     func configure(with recipe: Recipe) {
-        self.RicipeimageView.sd_setImage(
+        self.recipeimageView.sd_setImage(
             with: URL(string: recipe.image),
             placeholderImage: UIImage(named: "PlaceHolderImage"),
             options: [.highPriority, .scaleDownLargeImages],

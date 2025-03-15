@@ -21,7 +21,7 @@ class RecipeStepCell: UITableViewCell {
     
     private let stepNumberContainer: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 0.8, alpha: 1.0) // Color amarillo claro
+        view.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 0.8, alpha: 1.0)
         view.layer.cornerRadius = 20
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -87,8 +87,7 @@ class RecipeStepCell: UITableViewCell {
             self.stepNumberContainer.heightAnchor.constraint(
                 equalToConstant: 40
             )
-        ]
-        )
+        ])
     }
     
     private func configureContainerView() {
@@ -100,17 +99,43 @@ class RecipeStepCell: UITableViewCell {
         self.containerView.addSubview(self.horizontalStackView)
         self.contentView.addSubview(self.containerView)
         
-        NSLayoutConstraint.activate([
-            self.containerView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 8),
-            self.containerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16),
-            self.containerView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16),
-            self.containerView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -8),
-            
-            self.horizontalStackView.topAnchor.constraint(equalTo: self.containerView.topAnchor, constant: 12),
-            self.horizontalStackView.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 16),
-            self.horizontalStackView.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: -16),
-            self.horizontalStackView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor, constant: -12)
-        ])
+        NSLayoutConstraint.activate(
+            [
+                self.containerView.topAnchor.constraint(
+                    equalTo: self.contentView.topAnchor,
+                    constant: 8
+                ),
+                self.containerView.leadingAnchor.constraint(
+                    equalTo: self.contentView.leadingAnchor,
+                    constant: 16
+                ),
+                self.containerView.trailingAnchor.constraint(
+                    equalTo: self.contentView.trailingAnchor,
+                    constant: -16
+                ),
+                self.containerView.bottomAnchor.constraint(
+                    equalTo: self.contentView.bottomAnchor,
+                    constant: -8
+                ),
+                
+                self.horizontalStackView.topAnchor.constraint(
+                    equalTo: self.containerView.topAnchor,
+                    constant: 12
+                ),
+                self.horizontalStackView.leadingAnchor.constraint(
+                    equalTo: self.containerView.leadingAnchor,
+                    constant: 16
+                ),
+                self.horizontalStackView.trailingAnchor.constraint(
+                    equalTo: self.containerView.trailingAnchor,
+                    constant: -16
+                ),
+                self.horizontalStackView.bottomAnchor.constraint(
+                    equalTo: self.containerView.bottomAnchor,
+                    constant: -12
+                )
+            ]
+        )
     }
     
     func configure(with step: RecipeDetail.Instruction) {
