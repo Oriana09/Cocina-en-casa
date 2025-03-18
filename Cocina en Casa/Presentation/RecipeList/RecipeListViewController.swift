@@ -7,24 +7,25 @@
 
 import UIKit
 
-class RecipeViewController: UIViewController {
+
+class RecipeListViewController: UIViewController {
     
     let searchController = UISearchController(searchResultsController: nil)
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
+   
     
     private lazy var tableView: UITableView = {
         let table = UITableView()
         table.delegate = self
         table.dataSource = self
         table.translatesAutoresizingMaskIntoConstraints = false
-        /*table.separatorStyle = .none */ // Opcional: si no quieres separadores entre celdas
+        table.separatorStyle = .none
         return table
     }()
     
-    private let viewModel: RecipeSearchViewModel
+    private let viewModel:  RecipeListViewModel
     
     init(
-        viewModel: RecipeSearchViewModel
+        viewModel:  RecipeListViewModel
     ) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -42,15 +43,17 @@ class RecipeViewController: UIViewController {
         self.setupSearchController()
         self.configureTableView()
         self.registerCell()
-        self.configureActivityIndicator()
         self.setupBindings()
+        
     }
     
+    
+    
     func setupSearchController() {
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Buscar algo..."
-        searchController.searchBar.delegate = self
-        searchController.searchBar.showsCancelButton = true
+        self.searchController.obscuresBackgroundDuringPresentation = false
+        self.searchController.searchBar.placeholder = "Buscar algo..."
+        self.searchController.searchBar.delegate = self
+        self.searchController.searchBar.showsCancelButton = true
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
@@ -74,19 +77,13 @@ class RecipeViewController: UIViewController {
     }
     
     private func registerCell() {
-        tableView.register(RecipeTableViewCell.self, forCellReuseIdentifier: RecipeTableViewCell.identifier)
-    
+        self.tableView.register(SkeletonRecipeTableViewCell.self, forCellReuseIdentifier: SkeletonRecipeTableViewCell.identifier)
+        self.tableView.register(RecipeTableViewCell.self, forCellReuseIdentifier: RecipeTableViewCell.identifier)
+        
+        
     }
-
     
-    private func configureActivityIndicator() {
-        self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(self.activityIndicator)
-        NSLayoutConstraint.activate([
-            self.activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            self.activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-    }
+   
     
     private func setupBindings() {
         self.viewModel.onDataUpdated = { [weak self] in
@@ -103,63 +100,82 @@ class RecipeViewController: UIViewController {
         }
         self.viewModel.onLoadingStateChanged = { [weak self] isLoading in
             DispatchQueue.main.async {
-                if isLoading {
-                    self?.activityIndicator.startAnimating()
-                } else {
-                    self?.activityIndicator.stopAnimating()
-                }
+                self?.tableView.reloadData()
             }
+        }
+        self.viewModel.didSelectRecipe = { [weak self] recipeId in
+            guard let self = self else { return }
+            
+            let detailVC = RecipeDetailViewController(viewModel: RecipeDetailViewModel())
+            detailVC.recipeId = recipeId
+            self.navigationController?.pushViewController(detailVC, animated: true)
         }
     }
 }
 // MARK: - UITableViewDelegate
 
-extension RecipeViewController: UITableViewDelegate {
+extension RecipeListViewController: UITableViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let height = scrollView.frame.size.height
         
-        if offsetY > contentHeight - height {
+        if offsetY > contentHeight - height - 50 {
             self.viewModel.loadMoreData()
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let selectedRecipeId = viewModel.recipes[indexPath.row].id
+        self.viewModel.didSelectRecipe?(selectedRecipeId)
     }
 }
 
 // MARK: - UITableViewDataSource
 
-extension RecipeViewController: UITableViewDataSource {
+extension RecipeListViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.recipes.count
+        return  viewModel.isLoading ? 10 : viewModel.recipes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell =  tableView.dequeueReusableCell(withIdentifier: "RecipeTableViewCell", for: indexPath) as! RecipeTableViewCell
-        let recipe = viewModel.recipes[indexPath.row]
-        cell.configure(with: recipe)
-        return cell
+        
+        if viewModel.isLoading {
+            let cell =  tableView.dequeueReusableCell(withIdentifier: "SkeletonRecipeTableViewCell", for: indexPath) as! SkeletonRecipeTableViewCell
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + Double(indexPath.row) * 0.3
+            ) {
+                cell.startAnimation()
+            }
+            
+            return cell
+        } else {
+            let recipe = viewModel.recipes[indexPath.row]
+            let cell =  tableView.dequeueReusableCell(withIdentifier: "RecipeTableViewCell", for: indexPath) as! RecipeTableViewCell
+            
+            cell.configure(with: recipe)
+            return cell
+            
+        }
     }
-    
-    
 }
 
 // MARK: - UISearchBarDelegate
-extension RecipeViewController: UISearchBarDelegate {
+extension RecipeListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text, !query.isEmpty else { return }
         self.viewModel.searchRecipes(query: query)
         searchBar.resignFirstResponder()
     }
     
-    //    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    //        self.viewModel.nameRecipe = searchText
-    //    }
-    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.viewModel.searchRecipes(query: "")
-        searchBar.text = ""
-        self.tableView.reloadData()
         
+        searchBar.text = ""
+        
+        self.tableView.reloadData()
     }
 }
 

@@ -18,7 +18,7 @@ final class RecipeRepository: RecipeRepositoryType {
     }
     
     func searchRecipes(query: String, offset: Int) async throws -> [Recipe] {
-        return try await rometeDataSource.searchRecipes(
+        return try await self.rometeDataSource.searchRecipes(
             query: query,
             offset: offset
         )

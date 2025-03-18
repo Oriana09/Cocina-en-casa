@@ -18,9 +18,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         
-        let viewModel = RecipeSearchViewModel()
+        let viewModel =  RecipeListViewModel()
         let navigationController = UINavigationController(
-            rootViewController: RecipeViewController(
+            rootViewController: RecipeListViewController(
                 viewModel: viewModel
             )
         )

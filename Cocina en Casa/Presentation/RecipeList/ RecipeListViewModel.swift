@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @MainActor
-class RecipeSearchViewModel {
+class  RecipeListViewModel {
     
     private let searchUseCase: SearchRecipesUseCaseType
     
@@ -18,8 +18,9 @@ class RecipeSearchViewModel {
     var onDataUpdated: (() -> Void)?
     var onError: ((String, String) -> Void)?
     var onLoadingStateChanged: ((Bool) -> Void)?
+    var didSelectRecipe: ((Int) -> Void)?
     
-    private var isLoading = false {
+    private(set) var isLoading = false {
         didSet {
             onLoadingStateChanged?(isLoading)
         }
@@ -54,17 +55,20 @@ class RecipeSearchViewModel {
         isLoading = true
         
         Task(priority: .userInitiated) {
+            
             do {
                 let newRecipes = try await self.searchUseCase.execute(
                     query: query,
                     offset: offset
                 )
-                DispatchQueue.main.async {
-                    self.onDataUpdated?()
-                }
-            } catch let error as RecipeError {
+                self.recipes.append(contentsOf: newRecipes)
                 self.isLoading = false
+                self.onDataUpdated?()
+                
+                
+            } catch let error as RecipeError {
                 DispatchQueue.main.async {
+                    self.isLoading = false
                     self.handleError(error)
                 }
             }
