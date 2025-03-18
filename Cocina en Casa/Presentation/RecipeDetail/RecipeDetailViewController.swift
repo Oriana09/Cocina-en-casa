@@ -11,7 +11,7 @@ import SDWebImage
 
 class RecipeDetailViewController: UIViewController {
     
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private let loadingView =  LoadingView()
     private let contentView = RecipeDetailView()
     private let viewModel: RecipeDetailViewModel
     
@@ -35,7 +35,6 @@ class RecipeDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
-        self.configureActivityIndicator()
         self.setupBindings()
     }
     
@@ -50,15 +49,6 @@ class RecipeDetailViewController: UIViewController {
         )
     }
     
-    private func configureActivityIndicator() {
-        self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(self.activityIndicator)
-        NSLayoutConstraint.activate([
-            self.activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            self.activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-    }
-    
     private func setupBindings() {
         guard let recipeId = recipeId else {
             self.showAlertAndReturn()
@@ -67,10 +57,11 @@ class RecipeDetailViewController: UIViewController {
         
         self.viewModel.isLoading = { [weak self] isLoading in
             DispatchQueue.main.async {
+                guard let self = self else { return }
                 if isLoading {
-                    self?.activityIndicator.startAnimating()
+                    self.loadingView.show(in: self.view)
                 } else {
-                    self?.activityIndicator.stopAnimating()
+                    self.loadingView.hide()
                 }
             }
         }

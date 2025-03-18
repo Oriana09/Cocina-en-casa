@@ -55,19 +55,17 @@ class  RecipeListViewModel {
         isLoading = true
         
         Task(priority: .userInitiated) {
-           
+            
             do {
                 let newRecipes = try await self.searchUseCase.execute(
                     query: query,
                     offset: offset
                 )
+                self.recipes.append(contentsOf: newRecipes)
+                self.isLoading = false
+                self.onDataUpdated?()
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                    self.recipes.append(contentsOf: newRecipes)
-                    self.isLoading = false
-                    self.onDataUpdated?()
-                    
-                }
+                
             } catch let error as RecipeError {
                 DispatchQueue.main.async {
                     self.isLoading = false
