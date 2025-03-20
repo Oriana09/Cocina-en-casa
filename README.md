@@ -5,11 +5,11 @@
 ## 🛠️ Funcionalidades
 - **Búsqueda de recetas**: Ingresa el nombre de una receta, y obtén una lista de recetas relacionadas.
 - **Detalles de la receta**: Al seleccionar una receta, se muestra:
- •	Imagen de la receta
-	•	Título de la receta
-	•	Tiempo de cocción ⏳
-	•	Cantidad de porciones 🍽️
-	•	Pasos detallados para la preparación 📜
+    - Imagen de la receta
+    - Título de la receta
+    - Tiempo de cocción ⏳
+    - Cantidad de porciones 🍽️
+    - Pasos detallados para la preparación 📜
  - **Skeleton Loader**: Mientras se carga la lista de recetas, se muestra un efecto visual de carga para mejorar la experiencia de usuario.
  - **Activity Indicator en la vista de detalles**: Al seleccionar una receta, se muestra un indicador de carga mientras se obtiene toda la información.
  - **Animación de detalles**: El tiempo de cocción y la cantidad de porciones aparecen con una animación fluida al cargar la vista. 
@@ -26,7 +26,10 @@
  ---
  ### Librerías utilizadas:
  - **[SDWebImage](https://github.com/SDWebImage/SDWebImage)**: Para la carga eficiente de imágenes desde URLs.
-  ---
+---
+## 🌍 Idioma de la aplicación
+- La aplicación muestra las recetas en inglés, ya que la API utilizada devuelve la información en este idioma. 
+---
 ### 👩🏻‍💻 Contribuciones
 - ¡Las contribuciones son bienvenidas! Si deseas agregar una nueva funcionalidad, corregir errores o mejorar el diseño.
   ---
