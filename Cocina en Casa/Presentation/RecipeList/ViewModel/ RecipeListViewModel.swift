@@ -9,10 +9,8 @@ import Foundation
 import UIKit
 
 @MainActor
-class  RecipeListViewModel {
-    
+class RecipeListViewModel {
     private let searchUseCase: SearchRecipesUseCaseType
-    
     private(set) var recipes: [Recipe] = []
     
     var onDataUpdated: (() -> Void)?

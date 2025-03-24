@@ -12,7 +12,6 @@ class RecipeDetailViewModel {
     private let RecipeDetailUseCase: FetchRecipeDetailUseCasetype
     private(set) var recipe: RecipeDetail?
     
-    
     var onRecipeLoaded: (() -> Void)?
     var onError: ((String, String) -> Void)?
     var onLoadingStateChanged: ((Bool) -> Void)?
@@ -20,10 +19,8 @@ class RecipeDetailViewModel {
     
     init(
         recipeDetailUseCase: FetchRecipeDetailUseCasetype = FetchRecipeDetailUseCase()
-        
-    ){
+    ) {
         self.RecipeDetailUseCase = recipeDetailUseCase
-        
     }
     
     func loadRecipe(recipeId: Int) {
